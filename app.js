@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { response } = require('express');
+const {
+    response,
+    request
+} = require('express');
 require('ejs');
 
 const app = express();
@@ -12,16 +15,14 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 
-const contactContent = "The word “Calligraphy” is derived from Greek, meaning “beautiful writing”. Calligraphy or the art of fancy writing has thousands of years in its history and development."; 
+const contactContent = "The word “Calligraphy” is derived from Greek, meaning “beautiful writing”. Calligraphy or the art of fancy writing has thousands of years in its history and development.";
 const homeContent = "They are of aesthetics, refinement, creativity and pure beauty. For different scripts, for example, Chinese or Arabic, they have developed their own way of calligraphy.";
 const aboutContent = "Calligraphy fonts resemble elegant handwriting. They often look as if they were drawn with flat-tipped pens or brushes.";
 const posts = [];
 
 app.get("/", (request, response) => {
-    
-    
+
     // console.log(posts);
-    
     response.render("home", {
         posts: posts
     });
@@ -44,6 +45,21 @@ app.get("/compose", (request, response) => {
     response.render("compose");
 });
 
+app.get("/posts/:post", (request, response) => {
+    const requestedPost = request.params.post.toLowerCase();
+
+    posts.forEach((post) => {
+        if (post.title.toLowerCase() === requestedPost) {
+            // console.log("match found"); 
+            response.render("post", {
+                title: post.title,
+                content: post.content
+            });
+        }    
+    });
+
+
+});
 
 app.post("/compose", (request, response) => {
     let title = request.body.blogTitle;
@@ -52,15 +68,12 @@ app.post("/compose", (request, response) => {
     const post = {
         title: title,
         content: blog
-    };    
+    };
 
     posts.push(post);
-
-    response.render("home", {
-        posts: posts
-    });
+  
+   response.redirect("/");
 });
-
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("blog project started at 3000");
