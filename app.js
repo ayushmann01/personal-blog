@@ -1,9 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {
-    response,
-    request
-} = require('express');
+const fs = require('fs');
 require('ejs');
 
 const app = express();
@@ -50,15 +47,14 @@ app.get("/posts/:post", (request, response) => {
 
     posts.forEach((post) => {
         if (post.title.toLowerCase() === requestedPost) {
-            // console.log("match found"); 
+            
+            // console.log("match found");
             response.render("post", {
                 title: post.title,
                 content: post.content
             });
         }    
     });
-
-
 });
 
 app.post("/compose", (request, response) => {

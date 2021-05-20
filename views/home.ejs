@@ -5,8 +5,11 @@
 
     <% posts.forEach(post => { %>
         <div>
+            <% const content = post.content.substring(0, Math.min(110, post.content.length) ); %> 
             <h3><%= post.title %></h3>
-            <p><%= post.content %></p>
+            <p><%= content %>
+                <a  style="font-size: large;" href="http://localhost:3000/posts/<%=post.title%>" >...</a>
+            </p> 
         </div> 
     <% }); %>     
 </div>
