@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const dbConfig = require(__dirname + "/dbConfig");
 require('ejs');
 
 const app = express();
@@ -18,11 +19,12 @@ const posts = [];
 
 app.get("/", (request, response) => {
 
-    // console.log(posts);
-    response.render("home", {
-        posts: posts
+    dbConfig.Blog.find((err, blogs) => {
+        // console.log(posts);
+        response.render("home", {
+            posts: blogs
+        });
     });
-
 });
 
 app.get("/about", (request, response) => {
@@ -41,18 +43,19 @@ app.get("/compose", (request, response) => {
     response.render("compose");
 });
 
-app.get("/posts/:post", (request, response) => {
-    const requestedPost = request.params.post.toLowerCase();
+app.get("/posts/:postId", (request, response) => {
+    const requestedPostId = request.params.postId;
 
-    posts.forEach((post) => {
-        if (post.title.toLowerCase() === requestedPost) {
-            
+    dbConfig.Blog.findOne({
+        _id: requestedPostId
+    }, (err, post) => {
+        if (!err) {
             // console.log("match found");
             response.render("post", {
                 title: post.title,
                 content: post.content
             });
-        }    
+        } else response.redirect('/');
     });
 });
 
@@ -60,14 +63,9 @@ app.post("/compose", (request, response) => {
     let title = request.body.blogTitle;
     let blog = request.body.blog;
 
-    const post = {
-        title: title,
-        content: blog
-    };
+    dbConfig.newBlog(title, blog);
 
-    posts.push(post);
-  
-   response.redirect("/");
+    response.redirect("/");
 });
 
 app.listen(process.env.PORT || 3000, () => {
