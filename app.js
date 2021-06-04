@@ -13,9 +13,7 @@ app.use(express.static("public"));
 
 
 const contactContent = "The word “Calligraphy” is derived from Greek, meaning “beautiful writing”. Calligraphy or the art of fancy writing has thousands of years in its history and development.";
-const homeContent = "They are of aesthetics, refinement, creativity and pure beauty. For different scripts, for example, Chinese or Arabic, they have developed their own way of calligraphy.";
 const aboutContent = "Calligraphy fonts resemble elegant handwriting. They often look as if they were drawn with flat-tipped pens or brushes.";
-const posts = [];
 
 app.get("/", (request, response) => {
 
